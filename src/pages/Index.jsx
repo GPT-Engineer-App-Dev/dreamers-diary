@@ -1,7 +1,16 @@
-import { Container, VStack, Heading, Text, Box, Image, Link } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Image, Link, Button } from "@chakra-ui/react";
 import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 const Index = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    setPosts(storedPosts);
+  }, []);
+
   return (
     <Container centerContent maxW="container.md" py={10}>
       <VStack spacing={8} align="stretch">
@@ -14,23 +23,23 @@ const Index = () => {
           </Text>
         </Box>
 
-        <Box>
-          <Image
-            borderRadius="md"
-            src="https://via.placeholder.com/800x400"
-            alt="Blog cover"
-            mb={4}
-          />
-          <Heading as="h2" size="lg" mb={2}>
-            Latest Post
-          </Heading>
-          <Text fontSize="md" color="gray.700">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nisl eros, pulvinar facilisis justo mollis, auctor consequat urna.
-          </Text>
-          <Link color="teal.500" href="#" mt={2} display="block">
-            Read more...
-          </Link>
-        </Box>
+        <Button as={RouterLink} to="/add-post" colorScheme="teal" size="lg" mb={4}>
+          Add New Post
+        </Button>
+
+        {posts.map((post, index) => (
+          <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+            <Heading as="h2" size="lg" mb={2}>
+              {post.title}
+            </Heading>
+            <Text fontSize="sm" color="gray.500" mb={2}>
+              {new Date(post.date).toLocaleDateString()}
+            </Text>
+            <Text fontSize="md" color="gray.700">
+              {post.content}
+            </Text>
+          </Box>
+        ))}
 
         <Box textAlign="center">
           <Heading as="h2" size="lg" mb={4}>
